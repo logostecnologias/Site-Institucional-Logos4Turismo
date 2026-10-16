@@ -1,0 +1,15 @@
+{
+  // Site estático da Logos4Turismo, servido como Worker com assets (igual ao site da Logos Tecnologias)
+  "name": "logos4turismo-institucional",
+  "compatibility_date": "2026-09-17",
+  "assets": {
+    "directory": "."
+  },
+  // a Cloudflare cria o registro DNS do subdomínio sozinha (o domínio já está na conta)
+  "routes": [
+    { "pattern": "4turismo.logostecnologias.com", "custom_domain": true }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

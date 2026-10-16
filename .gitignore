@@ -7,3 +7,6 @@ marca/fontes-comparacao.*
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# cloudflare
+.wrangler

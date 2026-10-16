@@ -19,10 +19,17 @@ As telas de exemplo (WhatsApp, site, painel, automação) são feitas em HTML e 
 
 O número e a mensagem padrão ficam no topo de `assets/js/main.js` (`WA_NUM` e `WA_MSG`). Todo link com o atributo `data-wa` recebe o link do WhatsApp; um botão pode ter mensagem própria com `data-wa-msg="..."`.
 
-## Publicar em 4turismo.logostecnologias.com
+## Publicação (Cloudflare)
 
-1. Conectar este repositório na Vercel, Netlify ou Cloudflare Pages (sem comando de build; pasta de saída = raiz). Também funciona no GitHub Pages.
-2. No DNS de `logostecnologias.com`, criar um registro `CNAME` `4turismo` apontando para o endereço que a hospedagem indicar.
+No ar em **https://4turismo.logostecnologias.com**, como Worker da Cloudflare só com arquivos estáticos (mesmo esquema do site da Logos Tecnologias). A configuração está em `wrangler.jsonc`; o subdomínio é um custom domain, e a Cloudflare cuida do DNS e do certificado.
+
+Para publicar uma alteração:
+
+```
+npx wrangler deploy
+```
+
+O que não deve ir para o ar fica listado em `.assetsignore` (arquivos `.md`, configuração, `.git`).
 
 ## Medição
 

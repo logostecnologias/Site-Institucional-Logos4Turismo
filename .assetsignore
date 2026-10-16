@@ -1,0 +1,9 @@
+# Nada aqui vai para o ar. A pasta de assets é a raiz do repositório,
+# então tudo que não faz parte do site publicado precisa ser listado.
+.git
+.wrangler
+.gitignore
+.assetsignore
+wrangler.jsonc
+*.md
+marca/fontes-comparacao.*
