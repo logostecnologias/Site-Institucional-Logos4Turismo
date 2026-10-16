@@ -1,0 +1,9 @@
+# documentos internos de planejamento (não vão para o repositório público)
+PLANEJAMENTO.md
+COPY-HOME.md
+marca/fontes-comparacao.*
+
+# sistema
+.DS_Store
+Thumbs.db
+desktop.ini
