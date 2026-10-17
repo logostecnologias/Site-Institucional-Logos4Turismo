@@ -2,7 +2,7 @@
 
 Site da Logos4Turismo, empresa do grupo Logos Tecnologias que cuida do digital de agências de turismo: marketing, sites, sistemas e automação.
 
-Site estático: HTML, CSS e JavaScript puros, sem build e sem dependências. Para ver, abra `index.html` no navegador.
+Site estático: HTML, CSS e JavaScript puros, sem build e sem dependências. Para ver, abra `index.html` no navegador. A única parte com servidor é o salvamento das respostas do teste (ver abaixo).
 
 ## Estrutura
 
@@ -12,6 +12,7 @@ Site estático: HTML, CSS e JavaScript puros, sem build e sem dependências. Par
 - `assets/js/main.js`: interações (menu lateral, abas dos 4 caminhos, notificações animadas, teste da alta temporada, perguntas frequentes e links de WhatsApp)
 - `assets/img/`: imagem de compartilhamento (`og.png`) e capturas do site de exemplo (`case/`)
 - `marca/`: símbolo D2 e paleta
+- `api/`: worker que grava as respostas do teste (`worker.js`) e a tabela do banco (`schema.sql`)
 
 As telas de exemplo (WhatsApp, site, painel, automação) são feitas em HTML e CSS, sem imagem: edite direto no `index.html`.
 
@@ -30,6 +31,18 @@ npx wrangler deploy
 ```
 
 O que não deve ir para o ar fica listado em `.assetsignore` (arquivos `.md`, configuração, `.git`).
+
+## Respostas do teste
+
+Cada teste terminado é gravado, de forma anônima, no banco D1 `logos4turismo-teste`: respostas (`101100`, 1 = sim, na ordem das perguntas do `main.js`), pontuação, origem (`hero`, `link` ou `pagina`), UTMs, referrer, se era celular e se a pessoa clicou no WhatsApp depois. Não há nome nem telefone.
+
+Para consultar:
+
+```
+npx wrangler d1 execute logos4turismo-teste --remote --command "SELECT * FROM testes ORDER BY criado_em DESC LIMIT 50"
+```
+
+Ou pelo painel da Cloudflare, em Storage & Databases > D1. Se mudar a ordem ou a quantidade de perguntas do teste, ajuste também `api/worker.js` e lembre que as respostas antigas seguem a ordem anterior.
 
 ## Medição
 

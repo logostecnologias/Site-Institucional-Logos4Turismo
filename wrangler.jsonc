@@ -2,9 +2,20 @@
   // Site estático da Logos4Turismo, servido como Worker com assets (igual ao site da Logos Tecnologias)
   "name": "logos4turismo-institucional",
   "compatibility_date": "2026-09-17",
+  // o worker só grava as respostas do teste; o resto é arquivo estático
+  "main": "api/worker.js",
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "logos4turismo-teste",
+      "database_id": "4cf92a40-f5e3-43a7-8d57-bb342374f0f4"
+    }
+  ],
   // a Cloudflare cria o registro DNS do subdomínio sozinha (o domínio já está na conta)
   "routes": [
     { "pattern": "4turismo.logostecnologias.com", "custom_domain": true }
