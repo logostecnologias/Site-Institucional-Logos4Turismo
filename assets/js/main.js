@@ -15,6 +15,48 @@
     });
   });
 
+  // ---------- medição anônima: visitas, tempo e rolagem (gravadas por api/worker.js) ----------
+  const novoId = () => (crypto.randomUUID ? crypto.randomUUID()
+    : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)));
+  const envia = (rota, dados) => {
+    try {
+      fetch(`/api/${rota}`, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) }).catch(() => {});
+    } catch (e) { /* o site funciona mesmo sem salvar */ }
+  };
+  const params = new URLSearchParams(location.search);
+  const celular = matchMedia('(max-width: 859px)').matches;
+  const utm = { utm_source: params.get('utm_source'), utm_medium: params.get('utm_medium'), utm_campaign: params.get('utm_campaign') };
+  const visita = { id: novoId(), tempo: 0, scroll: 0, secao: 0 };
+  // não mede o arquivo aberto direto do disco nem robôs de teste
+  const mede = /^https?:$/.test(location.protocol) && !navigator.webdriver;
+  if (mede) {
+    // seções da home na ordem da página; a lista de nomes fica no worker (SECOES)
+    const secoes = [...document.querySelectorAll('#conteudo > section')];
+    let visivelDesde = document.visibilityState === 'visible' ? performance.now() : null;
+    let acumulado = 0;
+    const tempo = () => Math.round((acumulado + (visivelDesde === null ? 0 : performance.now() - visivelDesde)) / 1000);
+    let agendado = false;
+    const mediRolagem = () => {
+      agendado = false;
+      const alto = document.documentElement.scrollHeight - innerHeight;
+      const pct = alto > 0 ? Math.round((scrollY / alto) * 100) : 100;
+      if (pct > visita.scroll) visita.scroll = Math.min(100, pct);
+      secoes.forEach((sec, i) => { if (i > visita.secao && sec.getBoundingClientRect().top < innerHeight * 0.6) visita.secao = i; });
+    };
+    addEventListener('scroll', () => { if (!agendado) { agendado = true; requestAnimationFrame(mediRolagem); } }, { passive: true });
+    const manda = () => envia('visita', { ...visita, tempo: tempo(), pagina: location.pathname, referrer: document.referrer, celular, ...utm });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        if (visivelDesde !== null) { acumulado += performance.now() - visivelDesde; visivelDesde = null; }
+        manda();
+      } else {
+        visivelDesde = performance.now();
+      }
+    });
+    addEventListener('pagehide', manda);
+    manda();
+  }
+
   // header com borda ao rolar
   const header = document.querySelector('.header');
   const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
@@ -146,15 +188,8 @@
     ];
     let resp = [];
     // respostas vão anônimas para o banco (api/worker.js): sem nome, sem telefone
-    const novoId = () => (crypto.randomUUID ? crypto.randomUUID()
-      : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)));
     let origem = location.hash === '#teste' ? 'link' : 'pagina';
     document.querySelectorAll('[data-teste]').forEach((a) => a.addEventListener('click', () => { origem = 'hero'; }));
-    const envia = (rota, dados) => {
-      try {
-        fetch(`/api/${rota}`, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) }).catch(() => {});
-      } catch (e) { /* o teste funciona mesmo sem salvar */ }
-    };
     const foca = () => { const b = quiz.querySelector('.quiz__opt, .quiz__end .btn'); if (b) b.focus({ preventScroll: true }); };
     const passo = () => {
       const i = resp.length;
@@ -172,12 +207,12 @@
     const resultado = () => {
       const pontos = resp.filter(Boolean).length;
       const id = novoId();
-      const q = new URLSearchParams(location.search);
-      envia('teste', {
-        id, origem, respostas: resp.map((r) => (r ? '1' : '0')).join(''),
-        utm_source: q.get('utm_source'), utm_medium: q.get('utm_medium'), utm_campaign: q.get('utm_campaign'),
-        referrer: document.referrer, celular: matchMedia('(max-width: 859px)').matches,
-      });
+      if (mede) {
+        envia('teste', {
+          id, origem, respostas: resp.map((r) => (r ? '1' : '0')).join(''),
+          referrer: document.referrer, celular, visita: visita.id, ...utm,
+        });
+      }
       const f = faixas.find((x) => pontos >= x.min);
       const falhas = perguntas.filter((_, k) => !resp[k]);
       const caminhos = [...new Set(falhas.map((p) => p.c))];
@@ -196,7 +231,7 @@
         </div>
       </div>`;
       quiz.querySelector('.quiz__end .btn').addEventListener('click', () => {
-        envia('teste/whatsapp', { id });
+        if (mede) envia('teste/whatsapp', { id });
         if (typeof window.gtag === 'function') window.gtag('event', 'whatsapp_click', { origem: 'teste', pontos });
         if (typeof window.fbq === 'function') window.fbq('track', 'Contact');
       });

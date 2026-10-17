@@ -10,3 +10,6 @@ desktop.ini
 
 # cloudflare
 .wrangler
+
+# segredos locais do wrangler dev
+.dev.vars

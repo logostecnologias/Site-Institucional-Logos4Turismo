@@ -2,12 +2,12 @@
   // Site estático da Logos4Turismo, servido como Worker com assets (igual ao site da Logos Tecnologias)
   "name": "logos4turismo-institucional",
   "compatibility_date": "2026-09-17",
-  // o worker só grava as respostas do teste; o resto é arquivo estático
+  // o worker grava visitas e respostas do teste e protege o painel; o resto é arquivo estático
   "main": "api/worker.js",
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": ["/api/*", "/painel*"]
   },
   "d1_databases": [
     {

@@ -8,3 +8,4 @@ wrangler.jsonc
 *.md
 marca/fontes-comparacao.*
 api
+.dev.vars

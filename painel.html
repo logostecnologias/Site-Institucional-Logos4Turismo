@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel · Logos4Turismo</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="marca/simbolo-D2.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  /* painel interno: lido no Worker (api/worker.js), aberto só via Cloudflare Access */
+  body { font-size: 16px; }
+  .pn { padding: 28px 0 80px; }
+  .pn .wrap { max-width: 1280px; }
+  .pn__top { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; padding: 18px 0; border-bottom: 1px solid var(--linha); }
+  .pn__top h1 { font-size: 22px; font-weight: 700; margin-right: auto; }
+  .pn__top .wordmark { font-size: 24px; }
+  .pn__per { display: inline-flex; border: 1.5px solid var(--linha-2); border-radius: 10px; overflow: hidden; }
+  .pn__per button { padding: 8px 14px; border: 0; background: none; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--txt-2); }
+  .pn__per button[aria-pressed="true"] { background: var(--noite); color: #fff; }
+  .pn__msg { margin: 40px 0; color: var(--txt-2); }
+
+  .pn h2 { font-size: 19px; font-weight: 700; margin: 44px 0 6px; }
+  .pn h2 + p { color: var(--txt-3); font-size: 14.5px; margin-bottom: 16px; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1px; margin-top: 28px; background: var(--linha); border: 1px solid var(--linha); border-radius: 14px; overflow: hidden; }
+  .tile { padding: 18px 20px; background: var(--bg); }
+  .tile b { display: block; font-size: 34px; font-weight: 700; line-height: 1.1; letter-spacing: -.02em; color: var(--noite); font-variant-numeric: tabular-nums; }
+  .tile span { font-size: 14px; color: var(--txt-2); }
+  .tile small { display: block; margin-top: 2px; font-size: 13px; color: var(--txt-3); }
+
+  .duas { display: grid; gap: 0 48px; }
+  @media (min-width: 960px) { .duas { grid-template-columns: 1fr 1fr; } }
+
+  /* gráfico de pessoas por dia */
+  .dias { position: relative; display: flex; align-items: flex-end; gap: 2px; height: 180px; padding-top: 8px; border-bottom: 1px solid var(--linha-2); }
+  .dias__col { flex: 1; height: 100%; display: flex; align-items: flex-end; cursor: default; }
+  .dias__col i { display: block; width: 100%; min-height: 1px; border-radius: 4px 4px 0 0; background: var(--funda); }
+  .dias__col:hover i, .dias__col:focus i { background: var(--noite); }
+  .dias__eixo { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12.5px; color: var(--txt-3); }
+  .dica { position: absolute; z-index: 5; pointer-events: none; padding: 8px 11px; border-radius: 8px; background: var(--noite); color: #fff; font-size: 13px; line-height: 1.4; white-space: nowrap; transform: translate(-50%, -100%); }
+  .dica[hidden] { display: none; }
+
+  /* barras horizontais: rolagem, origens e perguntas */
+  .barras { display: grid; gap: 10px; }
+  .barra { display: grid; grid-template-columns: minmax(110px, 170px) 1fr 74px; align-items: center; gap: 12px; font-size: 14.5px; }
+  .barra__trilho { height: 12px; border-radius: 4px; background: var(--bg-2); overflow: hidden; }
+  .barra__trilho i { display: block; height: 100%; border-radius: 0 4px 4px 0; background: var(--funda); }
+  .barra--nao .barra__trilho i { background: var(--sol-2); }
+  .barra__v { text-align: right; font-variant-numeric: tabular-nums; color: var(--txt-2); }
+
+  /* tabela de testes */
+  .lista { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .lista th { text-align: left; font-size: 13px; font-weight: 600; color: var(--txt-3); padding: 0 12px 10px 0; border-bottom: 1px solid var(--linha-2); }
+  .lista td { padding: 14px 12px 14px 0; border-bottom: 1px solid var(--linha); vertical-align: top; }
+  .lista .nota { font-size: 22px; font-weight: 700; color: var(--noite); white-space: nowrap; }
+  .lista .nota small { font-size: 13px; font-weight: 500; color: var(--txt-3); }
+  .resp { display: grid; gap: 3px; min-width: 190px; }
+  .resp span { display: flex; gap: 7px; align-items: center; font-size: 13.5px; }
+  .resp span::before { content: "✓"; flex: none; width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; font-size: 11px; font-weight: 700; background: var(--bg-2); color: var(--funda); }
+  .resp span.nao { color: var(--txt); font-weight: 600; }
+  .resp span.nao::before { content: "✗"; background: var(--sol); color: var(--noite); }
+  .resp span:not(.nao) { color: var(--txt-3); }
+  .sug { max-width: 420px; }
+  .meta { font-size: 13px; color: var(--txt-3); white-space: nowrap; }
+  .wa { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 12.5px; font-weight: 700; background: var(--lagoa); color: var(--noite); }
+  @media (max-width: 859px) {
+    .lista thead { display: none; }
+    .lista, .lista tbody, .lista tr, .lista td { display: block; }
+    .lista tr { padding: 14px 0; border-bottom: 1px solid var(--linha-2); }
+    .lista td { padding: 4px 0; border: 0; }
+    .barra { grid-template-columns: 100px 1fr 62px; font-size: 13.5px; }
+  }
+</style>
+</head>
+<body>
+<main class="pn">
+  <div class="wrap">
+    <div class="pn__top">
+      <span class="wordmark">logos<img class="wm4" src="marca/simbolo-D2-recorte.svg" alt="4" width="20" height="25"><i>turismo</i></span>
+      <h1>Painel do site</h1>
+      <div class="pn__per" role="group" aria-label="Período">
+        <button data-dias="7" aria-pressed="false">7 dias</button>
+        <button data-dias="30" aria-pressed="true">30 dias</button>
+        <button data-dias="90" aria-pressed="false">90 dias</button>
+      </div>
+    </div>
+    <div id="painel"><p class="pn__msg">Carregando…</p></div>
+  </div>
+</main>
+<div class="dica" id="dica" hidden></div>
+
+<script>
+(() => {
+  const el = document.getElementById('painel');
+  const dica = document.getElementById('dica');
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const num = (n) => (n ?? 0).toLocaleString('pt-BR');
+  const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+  const dur = (s) => { s = Math.round(s || 0); return s < 60 ? `${s} s` : `${Math.floor(s / 60)} min ${String(s % 60).padStart(2, '0')} s`; };
+  // datas do banco estão em UTC; o painel mostra no horário de Brasília
+  const quando = (d) => new Date(`${d.replace(' ', 'T')}Z`).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' });
+  const diaCurto = (d) => `${d.slice(8, 10)}/${d.slice(5, 7)}`;
+  const ORIGEM = { hero: 'botão do topo', link: 'link direto', pagina: 'rolando a página' };
+
+  const barra = (rotulo, v, max, valor, cls = '') => `<div class="barra ${cls}" title="${esc(rotulo)}: ${esc(valor)}">
+    <span>${esc(rotulo)}</span><span class="barra__trilho"><i style="width:${max ? (v / max) * 100 : 0}%"></i></span><span class="barra__v">${valor}</span></div>`;
+
+  const desenha = (d) => {
+    const r = d.resumo;
+    const t = d.testes;
+    const clicaram = t.filter((x) => x.whatsapp).length;
+    const notaMedia = t.length ? (t.reduce((a, x) => a + x.pontos, 0) / t.length).toFixed(1).replace('.', ',') : '–';
+
+    // completa os dias sem visita para o gráfico não pular datas
+    const mapa = Object.fromEntries(d.porDia.map((x) => [x.dia, x]));
+    const dias = [];
+    for (let i = d.dias - 1; i >= 0; i--) {
+      const dia = new Date(Date.now() - i * 864e5).toISOString().slice(0, 10);
+      dias.push(mapa[dia] || { dia, visitas: 0, pessoas: 0 });
+    }
+    const maxDia = Math.max(1, ...dias.map((x) => x.pessoas));
+
+    // quanto cada pergunta leva de "não"
+    const naos = d.perguntas.map((p, i) => ({ ...p, n: t.filter((x) => x.respostas[i] === '0').length }));
+
+    el.innerHTML = `
+      <div class="tiles">
+        <div class="tile"><b>${num(r.pessoas)}</b><span>pessoas entraram</span><small>${num(r.visitas)} visitas</small></div>
+        <div class="tile"><b>${dur(r.tempo_medio)}</b><span>tempo médio no site</span></div>
+        <div class="tile"><b>${r.scroll_medio ?? 0}%</b><span>rolagem média da página</span></div>
+        <div class="tile"><b>${num(t.length)}</b><span>testes feitos</span><small>${pct(t.length, r.visitas)}% das visitas · nota média ${notaMedia}</small></div>
+        <div class="tile"><b>${num(clicaram)}</b><span>clicaram no WhatsApp</span><small>${pct(clicaram, t.length)}% de quem fez o teste</small></div>
+      </div>
+
+      <h2>Pessoas por dia</h2>
+      <p>Pessoas diferentes em cada dia. Passe o mouse para ver as visitas.</p>
+      <div class="dias" id="dias">${dias.map((x) => `<span class="dias__col" tabindex="0" data-dica="${diaCurto(x.dia)}: ${x.pessoas} ${x.pessoas === 1 ? 'pessoa' : 'pessoas'}, ${x.visitas} ${x.visitas === 1 ? 'visita' : 'visitas'}"><i style="height:${(x.pessoas / maxDia) * 100}%"></i></span>`).join('')}</div>
+      <div class="dias__eixo"><span>${diaCurto(dias[0].dia)}</span><span>maior dia: ${maxDia} ${maxDia === 1 ? 'pessoa' : 'pessoas'}</span><span>${diaCurto(dias[dias.length - 1].dia)}</span></div>
+
+      <div class="duas">
+        <div>
+          <h2>Até onde rolaram</h2>
+          <p>De cada 100 visitas, quantas chegaram a cada parte da página.</p>
+          <div class="barras">${d.funil.map((s) => barra(s.nome, s.visitas, r.visitas, `${pct(s.visitas, r.visitas)}%`)).join('')}</div>
+        </div>
+        <div>
+          <h2>De onde vieram</h2>
+          <p>UTM da campanha quando tem, senão o site que mandou a visita.</p>
+          <div class="barras">${d.origens.length ? d.origens.map((o) => barra(o.fonte, o.n, d.origens[0].n, num(o.n))).join('') : '<p class="meta">Sem visitas no período.</p>'}</div>
+          <h2>Onde mais respondem “não”</h2>
+          <p>Quantos dos ${num(t.length)} testes responderam não em cada pergunta.</p>
+          <div class="barras">${naos.map((p) => barra(p.curta, p.n, t.length, `${pct(p.n, t.length)}%`, 'barra--nao')).join('')}</div>
+        </div>
+      </div>
+
+      <h2>Respostas do teste</h2>
+      <p>Os ${Math.min(t.length, 300)} mais recentes do período. ✗ é onde a agência respondeu não.</p>
+      ${t.length ? `<table class="lista">
+        <thead><tr><th>Quando</th><th>Nota</th><th>Respostas</th><th>O que oferecer</th><th>Visita</th></tr></thead>
+        <tbody>${t.map((x) => `<tr>
+          <td class="meta">${quando(x.criado_em)}</td>
+          <td class="nota">${x.pontos}<small> de 6</small></td>
+          <td><div class="resp">${d.perguntas.map((p, i) => `<span class="${x.respostas[i] === '0' ? 'nao' : ''}">${esc(p.curta)}</span>`).join('')}</div></td>
+          <td class="sug">${esc(x.sugestao)}</td>
+          <td class="meta">${x.whatsapp ? '<span class="wa">Clicou no WhatsApp</span><br>' : ''}
+            ${esc(ORIGEM[x.origem] || '')}${x.utm_source ? `<br>${esc(x.utm_source)}${x.utm_campaign ? ` · ${esc(x.utm_campaign)}` : ''}` : ''}
+            <br>${x.celular ? 'celular' : 'computador'}${x.tempo_s ? ` · ${dur(x.tempo_s)} no site` : ''}</td>
+        </tr>`).join('')}</tbody></table>` : '<p class="meta">Ninguém fez o teste neste período.</p>'}`;
+
+    // dica das barras do gráfico de dias
+    const mostra = (e) => {
+      const c = e.target.closest('.dias__col');
+      if (!c) { dica.hidden = true; return; }
+      const b = c.getBoundingClientRect();
+      dica.textContent = c.dataset.dica;
+      dica.style.left = `${Math.min(innerWidth - 120, Math.max(120, b.left + b.width / 2))}px`;
+      dica.style.top = `${b.bottom + scrollY - c.firstChild.offsetHeight - 8}px`;
+      dica.hidden = false;
+    };
+    const g = document.getElementById('dias');
+    g.addEventListener('mouseover', mostra);
+    g.addEventListener('focusin', mostra);
+    g.addEventListener('mouseleave', () => { dica.hidden = true; });
+    g.addEventListener('focusout', () => { dica.hidden = true; });
+  };
+
+  const carrega = async (dias) => {
+    document.querySelectorAll('[data-dias]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.dias === String(dias))));
+    try {
+      const r = await fetch(`/api/painel?dias=${dias}`, { cache: 'no-store' });
+      if (!r.ok) throw new Error(r.status === 403 ? 'Sem acesso. Entre de novo pelo link do painel.' : `Erro ${r.status}`);
+      desenha(await r.json());
+    } catch (e) {
+      el.innerHTML = `<p class="pn__msg">Não deu para carregar os dados. ${esc(e.message)}</p>`;
+    }
+  };
+  document.querySelectorAll('[data-dias]').forEach((b) => b.addEventListener('click', () => carrega(Number(b.dataset.dias))));
+  carrega(30);
+})();
+</script>
+</body>
+</html>
