@@ -30,16 +30,38 @@
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Organization",
+      "@type": "WebSite",
+      "@id": "https://4turismo.logostecnologias.com/#site",
+      "url": "https://4turismo.logostecnologias.com/",
+      "name": "Logos4Turismo",
+      "inLanguage": "pt-BR",
+      "publisher": { "@id": "https://4turismo.logostecnologias.com/#org" }
+    },
+    {
+      "@type": ["Organization", "ProfessionalService"],
       "@id": "https://4turismo.logostecnologias.com/#org",
       "name": "Logos4Turismo",
       "url": "https://4turismo.logostecnologias.com/",
       "logo": "https://4turismo.logostecnologias.com/marca/simbolo-D2.png",
-      "description": "Marketing, sites, sistemas e automação para agências de turismo no Maranhão.",
+      "image": "https://4turismo.logostecnologias.com/assets/img/og.png",
+      "description": "Empresa de São Luís (MA), do grupo Logos Tecnologias, que cuida do digital de agências de turismo do Maranhão: marketing, sites, sistemas de reserva e automação de WhatsApp.",
       "email": "contato@logostecnologias.com",
       "telephone": "+55 98 98165-1527",
+      "address": { "@type": "PostalAddress", "addressLocality": "São Luís", "addressRegion": "MA", "addressCountry": "BR" },
       "areaServed": { "@type": "State", "name": "Maranhão" },
-      "parentOrganization": { "@type": "Organization", "name": "Logos Tecnologias", "url": "https://logostecnologias.com/" }
+      "knowsAbout": ["marketing para agências de turismo", "site para agência de turismo", "sistema de reservas para turismo", "automação de WhatsApp", "turismo no Maranhão"],
+      "sameAs": ["https://instagram.com/logos4turismo"],
+      "parentOrganization": { "@type": "Organization", "name": "Logos Tecnologias", "url": "https://logostecnologias.com/" },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Os 4 caminhos",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Marketing para agências de turismo", "description": "Instagram com calendário de conteúdo, anúncios no Instagram e no Google e campanhas para julho, dezembro e janeiro." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Site para agência de turismo", "description": "Site com pacotes e roteiros, uma página por destino e botão direto para o WhatsApp." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Sistema de reservas para agência de turismo", "description": "Cadastro de clientes, controle de saídas e vagas por data e relatório de vendas por pacote." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Automação de WhatsApp para agência de turismo", "description": "Resposta automática com roteiros e valores, confirmação e lembrete de passeio e retorno para orçamentos parados." } }
+        ]
+      }
     },
     {
       "@type": "FAQPage",

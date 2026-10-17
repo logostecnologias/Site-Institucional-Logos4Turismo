@@ -1,0 +1,33 @@
+# Logos4Turismo
+
+> Logos4Turismo é uma empresa de São Luís (MA), do grupo Logos Tecnologias, que cuida do digital de agências de turismo do Maranhão: marketing, sites, sistemas de reserva e automação de WhatsApp, com uma equipe só.
+
+Atende agências e operadoras de turismo de todo o Maranhão: São Luís, Lençóis Maranhenses (Barreirinhas, Atins, Santo Amaro), Chapada das Mesas, Delta das Américas e Alcântara. A maior parte do trabalho é online, com encontros presenciais quando precisa.
+
+## O que faz
+
+- **Marketing**: Instagram com calendário de conteúdo, anúncios no Instagram e no Google para quem pesquisa viagem ao Maranhão, campanhas para os picos de julho, dezembro e janeiro.
+- **Sites**: site da agência com pacotes e roteiros, uma página por destino, botão direto para o WhatsApp.
+- **Sistemas**: cadastro de clientes, controle de saídas e vagas por data, relatório de vendas por mês e por pacote.
+- **Automação**: resposta automática no WhatsApp com roteiros e valores, confirmação e lembrete de passeio, retorno para quem pediu orçamento e sumiu.
+
+## Como funciona
+
+1. Conversa sobre como a agência funciona hoje.
+2. Diagnóstico grátis, por escrito, com os 3 pontos onde a agência perde venda.
+3. Proposta por escrito com o que fazer primeiro e quanto custa.
+4. Execução, com uma conversa por mês sobre o que funcionou.
+
+A agência não paga nada até aprovar a proposta e pode contratar um caminho só.
+
+## Links
+
+- [Site](https://4turismo.logostecnologias.com/)
+- [Exemplo de site feito pelo grupo: ExploraMiq](https://www.exploramiq.net.br/)
+- [Logos Tecnologias, empresa-mãe](https://logostecnologias.com/)
+- [Instagram @logos4turismo](https://instagram.com/logos4turismo)
+
+## Contato
+
+- WhatsApp: (98) 98165-1527
+- E-mail: contato@logostecnologias.com
